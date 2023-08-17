@@ -27,35 +27,39 @@ object Constants {
     @Suppress("SpellCheckingInspection")
     const val RELEASE_PUBLIC_KEY_STRING = """
         {
-            "primaryKeyId": 437945208,
-            "key": [{
-                "keyData": {
-                    "typeUrl": "type.googleapis.com/google.crypto.tink.EciesAeadHkdfPublicKey",
-                    "keyMaterialType": "ASYMMETRIC_PUBLIC",
-                    "value": "EkQKBAgCEAMSOhI4CjB0eXBlLmdvb2dsZWFwaXMuY29tL2dvb2dsZS5jcnlwdG8udGluay5BZXNHY21LZXkSAhAQGAEYARohAL5Hc2sNbnpUuQeeWIfKEl+z2kK3GJ0l89k7mLqPRThgIiAOIT5bEubS/FLebsJ7usAsxxIIjNCXVj3975enYg1ssA=="
-                },
-                "outputPrefixType": "TINK",
-                "keyId": 437945208,
-                "status": "ENABLED"
-            }]
-        }
+  "primaryKeyId": 486731450,
+  "key": [
+    {
+      "keyData": {
+        "typeUrl": "type.googleapis.com/google.crypto.tink.EciesAeadHkdfPublicKey",
+        "value": "ElwKBAgCEAMSUhJQCjh0eXBlLmdvb2dsZWFwaXMuY29tL2dvb2dsZS5jcnlwdG8udGluay5BZXNDdHJIbWFjQWVhZEtleRISCgYKAggQEBASCAoECAMQEBAgGAEYARogg8+t42l4OlrYJ11hx85GoMYhPuuvJXRoDWn8Srcag3wiIMKkd2vULG5BCuF7XEQhDomnGcC+l33/QrzIOi1R7MJ/",
+        "keyMaterialType": "ASYMMETRIC_PUBLIC"
+      },
+      "status": "ENABLED",
+      "keyId": 486731450,
+      "outputPrefixType": "TINK"
+    }
+  ]
+}
     """
 
     @Suppress("SpellCheckingInspection")
     const val STAGING_PUBLIC_KEY_STRING = """
         {
-            "primaryKeyId": 3412351950,
-            "key": [{
-                "keyData": {
-                    "typeUrl": "type.googleapis.com/google.crypto.tink.EciesAeadHkdfPublicKey",
-                    "keyMaterialType": "ASYMMETRIC_PUBLIC",
-                    "value": "ElwKBAgCEAMSUhJQCjh0eXBlLmdvb2dsZWFwaXMuY29tL2dvb2dsZS5jcnlwdG8udGluay5BZXNDdHJIbWFjQWVhZEtleRISCgYKAggQEBASCAoECAMQEBAgGAEYARogGIRjU1iGu1eQ86LMS+BQRtccWYGMbh1FVEplotrBgxsiIEovOn1zuHshy3/EciMYwUmh5Rw6wRjSxpCaTlTSnWLU"
-                },
-                "outputPrefixType": "TINK",
-                "keyId": 3412351950,
-                "status": "ENABLED"
-            }]
-        }
+  "primaryKeyId": 486731450,
+  "key": [
+    {
+      "keyData": {
+        "typeUrl": "type.googleapis.com/google.crypto.tink.EciesAeadHkdfPublicKey",
+        "value": "ElwKBAgCEAMSUhJQCjh0eXBlLmdvb2dsZWFwaXMuY29tL2dvb2dsZS5jcnlwdG8udGluay5BZXNDdHJIbWFjQWVhZEtleRISCgYKAggQEBASCAoECAMQEBAgGAEYARogg8+t42l4OlrYJ11hx85GoMYhPuuvJXRoDWn8Srcag3wiIMKkd2vULG5BCuF7XEQhDomnGcC+l33/QrzIOi1R7MJ/",
+        "keyMaterialType": "ASYMMETRIC_PUBLIC"
+      },
+      "status": "ENABLED",
+      "keyId": 486731450,
+      "outputPrefixType": "TINK"
+    }
+  ]
+}
     """
 
     @Suppress("ConstantConditionIf")
