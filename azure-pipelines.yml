@@ -20,6 +20,6 @@ steps:
     tasks: 'assembleDebug'
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: 'android'
+    PathtoPublish: 'android/app/buid/outputs/apk'
     ArtifactName: 'drop'
     publishLocation: 'Container'
