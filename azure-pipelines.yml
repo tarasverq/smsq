@@ -20,6 +20,6 @@ steps:
     tasks: 'assembleDebug'
 - task: PublishBuildArtifacts@1
   inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    PathtoPublish: 'android'
     ArtifactName: 'drop'
     publishLocation: 'Container'
