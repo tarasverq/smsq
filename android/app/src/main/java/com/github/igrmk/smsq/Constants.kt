@@ -5,10 +5,10 @@ import com.google.crypto.tink.JsonKeysetReader
 
 object Constants {
     @Suppress("ConstantConditionIf")
-    val BOT_NAME = if (BuildConfig.BUILD_TYPE == "staging") "smsq_test_bot" else "smsq_bot"
+    val BOT_NAME = if (BuildConfig.BUILD_TYPE == "staging") "DietarySupplements_VN_bot" else "DietarySupplements_VN_bot"
     const val LOG_HALVING_SIZE = 100000
     const val LOG_FILE_NAME = "log"
-    const val DEFAULT_DOMAIN_NAME = "smsq.me"
+    const val DEFAULT_DOMAIN_NAME = "wasp-alive-basically.ngrok-free.app"
     const val PREFERENCES = "com.github.igrmk.smsq.preferences"
     const val PREF_DOMAIN_NAME = "domain_name"
     const val PREF_KEY = "key"
