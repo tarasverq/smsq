@@ -17,7 +17,8 @@ steps:
     gradleOptions: '-Xmx3072m'
     publishJUnitResults: false
     testResultsFiles: '**/TEST-*.xml'
-    tasks: 'assembleDebug'
+    tasks: 'assembleRelease'
+    
 - task: PublishBuildArtifacts@1
   inputs:
     PathtoPublish: 'android/app/build/outputs/apk'
