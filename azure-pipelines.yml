@@ -18,6 +18,13 @@ steps:
     publishJUnitResults: false
     testResultsFiles: '**/TEST-*.xml'
     tasks: 'assembleRelease'
+
+- task: AndroidSigning@3
+  inputs:
+    apkFiles: 'android/app/build/outputs/apk/*.apk'
+    apksignerKeystoreFile: 'my-release-key.keystore'
+    apksignerKeystorePassword: '$(KeystorePassword)'
+    apksignerKeystoreAlias: 'alias_name'
     
 - task: PublishBuildArtifacts@1
   inputs:
@@ -25,13 +32,15 @@ steps:
     ArtifactName: 'drop'
     publishLocation: 'Container'
 
-- task: GitHubRelease@1
-  inputs:
-    gitHubConnection: 'github'
-    repositoryName: '$(Build.Repository.Name)'
-    action: 'create'
-    target: '$(Build.SourceVersion)'
-    tagSource: 'gitTag'
-    assets: 'android/app/build/outputs/apk/*.apk'
-    changeLogCompareToRelease: 'lastFullRelease'
-    changeLogType: 'commitBased'
+
+
+#- task: GitHubRelease@1
+#  inputs:
+#    gitHubConnection: 'github'
+#    repositoryName: '$(Build.Repository.Name)'
+#    action: 'create'
+#    target: '$(Build.SourceVersion)'
+#    tagSource: 'gitTag'
+#    assets: 'android/app/build/outputs/apk/*.apk'
+#    changeLogCompareToRelease: 'lastFullRelease'
+#    changeLogType: 'commitBased'
