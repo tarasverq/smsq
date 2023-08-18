@@ -9,21 +9,21 @@
     tools:context="com.github.igrmk.smsq.activities.WelcomeActivity">
 
     <androidx.appcompat.widget.AppCompatImageButton
-        android:id="@+id/imageButton"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:layout_marginHorizontal="40dp"
-        android:layout_marginVertical="20dp"
-        android:background="@null"
-        android:onClick="onStartClicked"
-        android:scaleType="fitCenter"
-        app:layout_constraintBottom_toTopOf="@id/start"
-        app:layout_constraintHeight_max="300dp"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_max="300dp"
-        app:srcCompat="@drawable/ic_off" />
+            android:id="@+id/imageButton"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginHorizontal="40dp"
+            android:layout_marginVertical="20dp"
+            android:background="@null"
+            android:onClick="onStartClicked"
+            android:scaleType="fitCenter"
+            app:layout_constraintBottom_toTopOf="@+id/botIdText"
+            app:layout_constraintHeight_max="300dp"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintWidth_max="300dp"
+            app:srcCompat="@drawable/ic_off" />
 
     <Button
         android:id="@+id/start"
@@ -139,4 +139,22 @@
             app:layout_constraintTop_toTopOf="parent"
             tools:ignore="RtlHardcoded" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:ems="10"
+            android:id="@+id/urlText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/start" android:hint="URL"/>
+    <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:ems="10"
+            android:id="@+id/botIdText"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" android:layout_marginBottom="4dp"
+            app:layout_constraintBottom_toTopOf="@+id/urlText" android:hint="Bot name"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

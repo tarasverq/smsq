@@ -62,3 +62,11 @@ var SharedPreferences.delivered: Int
         putInt(Constants.PREF_DELIVERED, value)
         apply()
     }
+
+var SharedPreferences.botName: String
+    get() = getString("BOT_NAME", Constants.BOT_NAME)
+    set(value) = with(edit()) {
+        putString("BOT_NAME", value)
+        apply()
+    }
+
