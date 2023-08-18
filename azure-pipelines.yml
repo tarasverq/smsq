@@ -21,7 +21,7 @@ steps:
 
 - task: AndroidSigning@3
   inputs:
-    apkFiles: 'android/app/build/outputs/apk/*.apk'
+    apkFiles: 'android/app/build/outputs/apk/release/*.apk'
     apksignerKeystoreFile: 'my-release-key.keystore'
     apksignerKeystorePassword: '$(KeystorePassword)'
     apksignerKeystoreAlias: 'alias_name'
