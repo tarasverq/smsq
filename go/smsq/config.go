@@ -8,6 +8,7 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/google/tink/go/insecurecleartextkeyset"
 	"github.com/google/tink/go/keyset"
@@ -42,12 +43,32 @@ func parseConfig(r io.Reader) *config {
 	decoder.DisallowUnknownFields()
 	cfg := &config{}
 	err := decoder.Decode(cfg)
+	parseEnv(cfg)
 	checkErr(err)
 	checkErr(checkConfig(cfg))
 	privateKey, err := parsePrivateKey(cfg.PrivateKey)
 	checkErr(err)
 	cfg.privateKey = privateKey
 	return cfg
+}
+
+func parseEnv(config *config) {
+	envVar, ok := os.LookupEnv("DOMAIN")
+	if ok == true {
+		config.WebhookDomain = envVar
+		config.APIDomain = envVar
+	}
+
+	envVar, ok = os.LookupEnv("BOT_TOKEN")
+	if ok == true {
+		config.BotToken = envVar
+	}
+
+	envVar, ok = os.LookupEnv("ADMIN_ID")
+	if ok == true {
+		id, _ := strconv.ParseInt(envVar, 10, 64)
+		config.AdminID = id
+	}
 }
 
 func checkConfig(cfg *config) error {

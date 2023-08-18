@@ -8,7 +8,7 @@ object Constants {
     val BOT_NAME = if (BuildConfig.BUILD_TYPE == "staging") "smsq_test_bot" else "smsq_bot"
     const val LOG_HALVING_SIZE = 100000
     const val LOG_FILE_NAME = "log"
-    const val DEFAULT_DOMAIN_NAME = "smsq.me"
+    val DEFAULT_DOMAIN_NAME = if (BuildConfig.BUILD_TYPE == "staging") "https://apitest.smsq.me/" else "https://api.smsq.me/";
     const val PREFERENCES = "com.github.igrmk.smsq.preferences"
     const val PREF_DOMAIN_NAME = "domain_name"
     const val PREF_KEY = "key"
@@ -27,16 +27,16 @@ object Constants {
     @Suppress("SpellCheckingInspection")
     const val RELEASE_PUBLIC_KEY_STRING = """
         {
-            "primaryKeyId": 437945208,
-            "key": [{
-                "keyData": {
-                    "typeUrl": "type.googleapis.com/google.crypto.tink.EciesAeadHkdfPublicKey",
-                    "keyMaterialType": "ASYMMETRIC_PUBLIC",
-                    "value": "EkQKBAgCEAMSOhI4CjB0eXBlLmdvb2dsZWFwaXMuY29tL2dvb2dsZS5jcnlwdG8udGluay5BZXNHY21LZXkSAhAQGAEYARohAL5Hc2sNbnpUuQeeWIfKEl+z2kK3GJ0l89k7mLqPRThgIiAOIT5bEubS/FLebsJ7usAsxxIIjNCXVj3975enYg1ssA=="
-                },
-                "outputPrefixType": "TINK",
-                "keyId": 437945208,
-                "status": "ENABLED"
+          "primaryKeyId": 486731450,
+          "key": [{
+              "keyData": {
+                "typeUrl": "type.googleapis.com/google.crypto.tink.EciesAeadHkdfPublicKey",
+                "keyMaterialType": "ASYMMETRIC_PUBLIC",
+                "value": "ElwKBAgCEAMSUhJQCjh0eXBlLmdvb2dsZWFwaXMuY29tL2dvb2dsZS5jcnlwdG8udGluay5BZXNDdHJIbWFjQWVhZEtleRISCgYKAggQEBASCAoECAMQEBAgGAEYARogg8+t42l4OlrYJ11hx85GoMYhPuuvJXRoDWn8Srcag3wiIMKkd2vULG5BCuF7XEQhDomnGcC+l33/QrzIOi1R7MJ/"
+              },
+              "outputPrefixType": "TINK",
+              "keyId": 486731450,
+              "status": "ENABLED"
             }]
         }
     """

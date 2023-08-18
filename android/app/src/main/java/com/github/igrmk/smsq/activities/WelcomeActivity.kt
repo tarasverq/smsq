@@ -73,6 +73,11 @@ class WelcomeActivity : AppCompatActivity() {
         if (myPreferences.showCarrier) {
             checkShowCarrierSwitch()
         }
+
+        botIdText.setText(myPreferences.botName);
+        urlText.setText(myPreferences.domainName);
+        botIdText.isEnabled = !myPreferences.on;
+        urlText.isEnabled = !myPreferences.on;
     }
 
     private fun logSmsReceivers() {
@@ -128,9 +133,26 @@ class WelcomeActivity : AppCompatActivity() {
 
     fun onStartClicked(@Suppress("UNUSED_PARAMETER") view: View) {
         if (!myPreferences.on) {
+
+            val bot = botIdText.text.toString();
+            if (bot != null && bot.trim().isNotEmpty()) {
+                myPreferences.botName = bot;
+            }
+
+
+            val url = urlText.text.toString();
+            if (url != null && url.trim().isNotEmpty()) {
+                myPreferences.domainName = url;
+            }
+
+            botIdText.isEnabled = false;
+            urlText.isEnabled = false;
+
             start()
         } else {
             stop()
+            botIdText.isEnabled = true;
+            urlText.isEnabled = true;
         }
     }
 
@@ -177,7 +199,7 @@ class WelcomeActivity : AppCompatActivity() {
     }
 
     fun onConnectClicked(@Suppress("UNUSED_PARAMETER") view: View) {
-        val link = "tg://resolve?domain=${Constants.BOT_NAME}&start=${myPreferences.key}"
+        val link = "tg://resolve?domain=${myPreferences.botName}&start=${myPreferences.key}"
         try {
             startActivity(Intent(Intent.ACTION_VIEW, Uri.parse(link)))
         } catch (ex: android.content.ActivityNotFoundException) {
@@ -223,6 +245,7 @@ class WelcomeActivity : AppCompatActivity() {
                 } else {
                     stop()
                 }
+
             Constants.PERMISSIONS_STATE ->
                 if (grantResults.isNotEmpty() && grantResults.all { it == PERMISSION_GRANTED }) {
                     showCarrier.isChecked = true

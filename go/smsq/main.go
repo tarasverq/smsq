@@ -557,8 +557,8 @@ func (w *worker) apiReply(writer http.ResponseWriter, result deliveryResult) {
 }
 
 func (w *worker) handleEndpoints() {
-	http.HandleFunc(path.Join(w.cfg.APIDomain, "/v0/sms"), w.handleRetired)
-	http.HandleFunc(path.Join(w.cfg.APIDomain, "/v1/sms"), w.handleV1SMS)
+	http.HandleFunc("/v0/sms", w.handleRetired)
+	http.HandleFunc("/v1/sms", w.handleV1SMS)
 }
 
 func (w *worker) deliver(sms sms) deliveryResult {
@@ -643,7 +643,7 @@ func main() {
 	w.setWebhook()
 	w.createDatabase()
 
-	incoming := w.bot.ListenForWebhook(path.Join(w.cfg.WebhookDomain, w.cfg.BotToken))
+	incoming := w.bot.ListenForWebhook("/" + w.cfg.BotToken)
 	w.handleEndpoints()
 
 	go func() {
