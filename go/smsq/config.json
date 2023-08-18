@@ -1,0 +1,14 @@
+{
+    "listen_address": ":80",
+    "api_domain": "",
+    "webhook_domain": "",
+    "bot_token": "",
+    "timeout_seconds": 50,
+    "admin_id": 0,
+    "db_path": "db.db",
+    "debug": true,
+    "private_key": "pk.json",
+    "received_limit": 100500,
+    "delivered_limit": 100500,
+    "challenges": {}
+}
