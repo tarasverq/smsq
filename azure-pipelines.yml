@@ -24,3 +24,14 @@ steps:
     PathtoPublish: 'android/app/build/outputs/apk'
     ArtifactName: 'drop'
     publishLocation: 'Container'
+
+- task: GitHubRelease@1
+  inputs:
+    gitHubConnection: 'github'
+    repositoryName: '$(Build.Repository.Name)'
+    action: 'create'
+    target: '$(Build.SourceVersion)'
+    tagSource: 'gitTag'
+    assets: 'android/app/build/outputs/apk/*.apk'
+    changeLogCompareToRelease: 'lastFullRelease'
+    changeLogType: 'commitBased'
