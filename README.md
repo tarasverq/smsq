@@ -74,6 +74,18 @@ Installation client
 ------------
 Just install mobile app from [releases](https://github.com/tarasverq/smsq/releases) 
 
+> :warning: **WARNING**
+>
+> If you want to use it into long-running background mode, you need to disable Google Play Protect. [Instruction](https://support.mobile-tracker-free.com/hc/en-us/articles/360005346953-How-to-disable-Google-Play-Protect-) <br/>
+> Otherwise, the Google Play Protect service will unload the app every 4 hours because it doesn't have a certification.<br/>
+> Certification requires an android developer account, which I don't have.
+>
+> ```
+> Finsky  : [849] afwq.a(9): Attempting to stop application: com.github.igrmk.smsq
+> ActivityManager: Force stopping com.github.igrmk.smsq appid=10459 user=0: from pid 25542
+> Finsky  : [849] afyu.a(861): Unwanted app (MUwS) without is_muws flag was returned with verdict POTENTIALLY_UNWANTED on autoscan: com.github.igrmk.smsq
+> ```
+
 Usage
 -----
 
@@ -97,4 +109,7 @@ __[PRIVACY POLICY](PRIVACY.md)__
 
 Thanks to
 ---------
-[![JetBrains](svg/jetbrains.svg)](https://www.jetbrains.com/?from=smsq)
+- [Igor Mikushkin](https://github.com/igrmk)
+
+- [JetBrains](https://www.jetbrains.com/?from=smsq)
+
