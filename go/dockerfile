@@ -2,12 +2,15 @@ FROM golang:alpine AS build
 
 WORKDIR /app
 ENV CGO_ENABLED=1
+ENV CGO_CFLAGS="-D_LARGEFILE64_SOURCE"
 
 RUN apk add --no-cache \
     # Important: required for go-sqlite3
     gcc \
     # Required for Alpine
-    musl-dev
+    musl-dev \
+    # SQLite3 headers and library
+    sqlite-dev
 
 COPY go.mod ./
 COPY go.sum ./
@@ -15,7 +18,7 @@ RUN go mod download
 
 COPY smsq/*.* ./
 
-RUN GOOS=linux GOARCH=amd64 go build -o /smsq-backend
+RUN go build -o /smsq-backend
 
 
 FROM alpine:latest
