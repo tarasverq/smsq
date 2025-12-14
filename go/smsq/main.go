@@ -606,7 +606,12 @@ func (w *worker) deliver(sms sms) deliveryResult {
 	lines = append(lines, html.EscapeString(sms.Text))
 	text := strings.Join(lines, "\n")
 
-	if err := w.sendText(*chatID, true, parseHTML, text); err != nil {
+	targetChatID := *chatID
+	if w.cfg.GroupID != 0 {
+		targetChatID = w.cfg.GroupID
+	}
+
+	if err := w.sendText(targetChatID, true, parseHTML, text); err != nil {
 		switch err {
 		case errBlockedByUser:
 			return blocked
