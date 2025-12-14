@@ -31,6 +31,7 @@ Just run it with command <br/>
 | DOMAIN_HERE     | Domain with port for tg webhook. Webhook can be set up only on ports 80, 88, 443 or 8443  |
 | BOT_TOKEN_HERE  | Your bot token obtained from [@BotFather](https://t.me/BotFather)                         |
 | YOUR_TG_ID_HERE | Your TG ID. Easiest way to get it: [@username_to_id_bot](https://t.me/username_to_id_bot) |
+| GROUP_ID (optional) | Group ID to send SMS messages to. If set, messages will be sent to this group instead of individual chat. Get it by adding [@username_to_id_bot](https://t.me/username_to_id_bot) to your group |
 | PORT_HERE       | Host Machine port                                                                         |
 
 
@@ -38,6 +39,22 @@ Example:<br/>
 `
 docker run --name smsq -d --env=DOMAIN=domain.com:443 --env=BOT_TOKEN=6531881811:AAF111e3coTifgug03-MdxN2tUEh7kp4Sm4 --env=ADMIN_ID=123321 -p 8888:80 tarasverq/smsq-backend:latest
 `
+
+#### Sending messages to a Telegram group (optional)
+
+Add `GROUP_ID` environment variable with your group ID:
+
+```bash
+docker run --name smsq -d \
+  --env=DOMAIN=domain.com:443 \
+  --env=BOT_TOKEN=your_bot_token \
+  --env=ADMIN_ID=123321 \
+  --env=GROUP_ID=-1001234567890 \
+  -p 8080:80 \
+  ghcr.io/vitormattos/smsq:latest
+```
+
+Get group ID by adding [@username_to_id_bot](https://t.me/username_to_id_bot) to your group (will be negative, e.g., `-1001234567890`)
 
 **IMPORTANT:** Don't forget to send `/start` message to your bot before starting up docker image
 
