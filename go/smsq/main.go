@@ -395,6 +395,11 @@ func (w *worker) processTGUpdate(u tg.Update) {
 	onlyInAPrivateChat := "smsq_bot works only in a private chat"
 	if u.Message != nil && u.Message.Chat != nil {
 		if newMembers := u.Message.NewChatMembers; newMembers != nil && len(*newMembers) > 0 {
+			// Bot was added to a group/channel - allow it silently if GROUP_ID is configured
+			if w.cfg.GroupID != 0 {
+				return
+			}
+			// Otherwise, inform that bot works only in private chat
 			ourID := w.ourID()
 			for _, m := range *newMembers {
 				if int64(m.ID) == ourID {
@@ -578,7 +583,11 @@ func (w *worker) deliver(sms sms) deliveryResult {
 	if deliveredToday >= dailyLimit {
 		if deliveredToday == dailyLimit {
 			w.mustExec("update users set delivered_today=delivered_today+1 where chat_id=?", *chatID)
-			_ = w.sendText(*chatID, true, parseRaw, fmt.Sprintf("We cannot deliver more than %d messages a day", w.cfg.DeliveredLimit))
+			targetChatID := *chatID
+			if w.cfg.GroupID != 0 {
+				targetChatID = w.cfg.GroupID
+			}
+			_ = w.sendText(targetChatID, true, parseRaw, fmt.Sprintf("We cannot deliver more than %d messages a day", w.cfg.DeliveredLimit))
 		}
 		return rateLimited
 	}
