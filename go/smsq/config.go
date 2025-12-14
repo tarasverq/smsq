@@ -21,6 +21,7 @@ type config struct {
 	BotToken       string            `json:"bot_token"`       // your Telegram bot token
 	TimeoutSeconds int               `json:"timeout_seconds"` // HTTP timeout
 	AdminID        int64             `json:"admin_id"`        // admin Telegram ID
+	GroupID        int64             `json:"group_id"`        // group Telegram ID (optional, if set, SMS will be sent to this group)
 	DBPath         string            `json:"db_path"`         // path to the database
 	Debug          bool              `json:"debug"`           // debug mode
 	PrivateKey     string            `json:"private_key"`     // private key
@@ -68,6 +69,12 @@ func parseEnv(config *config) {
 	if ok == true {
 		id, _ := strconv.ParseInt(envVar, 10, 64)
 		config.AdminID = id
+	}
+
+	envVar, ok = os.LookupEnv("GROUP_ID")
+	if ok == true {
+		id, _ := strconv.ParseInt(envVar, 10, 64)
+		config.GroupID = id
 	}
 }
 
