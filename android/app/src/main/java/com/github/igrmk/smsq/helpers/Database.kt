@@ -45,7 +45,13 @@ class DbHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "database", version 
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        onCreate(db)
+        if (oldVersion < 18) {
+            try {
+                db.execSQL("ALTER TABLE $TABLE_SMS ADD COLUMN $COLUMN_SMS_TYPE TEXT DEFAULT 'sms'")
+            } catch (e: Exception) {
+                // Column already exists
+            }
+        }
     }
 }
 
