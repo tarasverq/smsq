@@ -107,6 +107,11 @@ Usage
 <br/>
 <img width="163" height="158" alt="image" src="https://github.com/user-attachments/assets/5a1ed266-0c2e-4b46-8ca2-6e8baeb1b6a2" />
 
+### In case you don't want to set up backend you can use backend deployed by me.
+
+Bot: `sms_j_bot`<br/>
+Backend URL: `https://smsq.jora.wtf/`
+
 Features
 --------
 
@@ -122,10 +127,7 @@ You can connect multiple phones to a single Telegram account. Each device gets i
 - **Show carrier** — Include SIM/carrier name in notifications
 - **Forward calls** — Enable/disable incoming call notifications (SMS forwarding is always on)
 
-### In case you don't want to set up backend you can use backend deployed by me.
 
-Bot: `sms_j_bot`<br/>
-Backend URL: `https://smsq.jora.wtf/`
 
 Privacy policy
 --------------
