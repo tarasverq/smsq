@@ -12,6 +12,7 @@ class DbHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "database", version 
     companion object {
         const val TABLE_SMS = "sms"
         const val COLUMN_SMS_ID = "id"
+        const val COLUMN_SMS_TYPE = "type"
         const val COLUMN_SMS_TEXT = "text"
         const val COLUMN_SMS_SENDER = "sender"
         const val COLUMN_SMS_CARRIER = "carrier"
@@ -33,6 +34,7 @@ class DbHelper(ctx: Context) : ManagedSQLiteOpenHelper(ctx, "database", version 
     override fun onCreate(db: SQLiteDatabase) {
         db.createTable(TABLE_SMS, true,
                 COLUMN_SMS_ID to INTEGER + PRIMARY_KEY + AUTOINCREMENT,
+                COLUMN_SMS_TYPE to TEXT + DEFAULT("'sms'"),
                 COLUMN_SMS_TEXT to TEXT,
                 COLUMN_SMS_SENDER to TEXT,
                 COLUMN_SMS_CARRIER to TEXT,
@@ -53,6 +55,7 @@ val Context.database: DbHelper
 fun Context.storeSms(sms: Sms) {
     database.use {
         insert(DbHelper.TABLE_SMS,
+                DbHelper.COLUMN_SMS_TYPE to sms.type,
                 DbHelper.COLUMN_SMS_TEXT to sms.text,
                 DbHelper.COLUMN_SMS_SENDER to sms.sender,
                 DbHelper.COLUMN_SMS_CARRIER to sms.carrier,
@@ -68,6 +71,7 @@ fun Context.allSmses(): List<Sms> {
         select(
                 DbHelper.TABLE_SMS,
                 DbHelper.COLUMN_SMS_ID,
+                DbHelper.COLUMN_SMS_TYPE,
                 DbHelper.COLUMN_SMS_TEXT,
                 DbHelper.COLUMN_SMS_SENDER,
                 DbHelper.COLUMN_SMS_CARRIER,
@@ -77,6 +81,7 @@ fun Context.allSmses(): List<Sms> {
         )
                 .orderBy(DbHelper.COLUMN_SMS_TIMESTAMP)
                 .parseList(rowParser { id: Int,
+                                       type: String,
                                        text: String,
                                        sender: String,
                                        carrier: String,
@@ -85,6 +90,7 @@ fun Context.allSmses(): List<Sms> {
                                        offset: Int ->
                     Sms().apply {
                         this.id = id
+                        this.type = type
                         this.text = text
                         this.sender = sender
                         this.carrier = carrier

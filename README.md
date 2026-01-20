@@ -1,11 +1,11 @@
-Android app forwarding SMS messages to Telegram bot
-===================================================
+Android app forwarding SMS messages and call notifications to a Telegram bot
+======================================================================
 
 [![license: GPL v3](https://img.shields.io/badge/license-GPL_v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![github pages](https://img.shields.io/badge/github-pages-blue.svg)](https://smsq.me)
 
 It is just a handy thing when you work on your laptop.
-You probably don't want to pick up your phone every time you need to enter an OTP code.
+You probably don't want to pick up your phone every time you need to enter an OTP code or check who is calling.
 
 ## This is parametrized fork of original smsq by Igor Mikushkin
 
@@ -15,7 +15,7 @@ Since Igor's backend doesn't seem to work anymore, I decided to set up my own.
 
 This fork allows you to set up your own backend and telegram bot.
 
-![image](https://github.com/tarasverq/smsq/assets/8226275/9d411f25-f668-4f14-a33e-df06a3882346)
+![App main screen](https://github.com/tarasverq/smsq/assets/8226275/9d411f25-f668-4f14-a33e-df06a3882346)
 
 ### Backend installation (optional)
 
@@ -89,14 +89,14 @@ Just install mobile app from [releases](https://github.com/tarasverq/smsq/releas
 Usage
 -----
 
-![image](https://github.com/tarasverq/smsq/assets/8226275/9d411f25-f668-4f14-a33e-df06a3882346)
+![App main screen](https://github.com/tarasverq/smsq/assets/8226275/9d411f25-f668-4f14-a33e-df06a3882346)
 
 1. Install Android app
 2. Open the app
 3. Put your bot name to first text field. e.g. `my_sms_bot` 
 4. Put your backend url **with ending slash**.  e.g. `https://domain.com/` 
 5. start forwarding, connect Telegram
-6. Now you receive your SMS messages in this bot!
+6. Now you receive your SMS messages and incoming call notifications in this bot!
 
 ### In case you don't want to set up backend you can use backend deployed by me.
 

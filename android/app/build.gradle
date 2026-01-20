@@ -11,8 +11,8 @@ android {
         applicationId "com.github.igrmk.smsq"
         minSdkVersion 19
         targetSdkVersion 28
-        versionCode 16
-        versionName "1.6.1"
+        versionCode 17
+        versionName "1.7.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }

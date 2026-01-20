@@ -23,6 +23,7 @@ object Constants {
     const val KEY_LENGTH = 64
     const val PERMISSIONS_SMS = 1
     const val PERMISSIONS_STATE = 2
+    const val PERMISSIONS_CALL_LOG = 3
 
     @Suppress("SpellCheckingInspection")
     const val RELEASE_PUBLIC_KEY_STRING = """

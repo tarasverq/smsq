@@ -94,7 +94,9 @@ class WelcomeActivity : AppCompatActivity() {
             allowed()
             return true
         }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) == PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) == PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PERMISSION_GRANTED) {
             allowed()
             return true
         }
@@ -107,7 +109,15 @@ class WelcomeActivity : AppCompatActivity() {
             return
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECEIVE_SMS), Constants.PERMISSIONS_SMS)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.RECEIVE_SMS,
+                    Manifest.permission.READ_CALL_LOG,
+                    Manifest.permission.READ_PHONE_STATE
+                ),
+                Constants.PERMISSIONS_SMS
+            )
         }
     }
 
@@ -185,7 +195,7 @@ class WelcomeActivity : AppCompatActivity() {
 
     private fun consentAlert() {
         AlertDialog.Builder(this)
-                .setMessage("Allow this application to read new SMS messages including their text, sender information, time and carrier name?")
+                .setMessage("Allow this application to read new SMS messages and calls including their text, sender information, time and carrier name?")
                 .setPositiveButton(android.R.string.yes) { _, _ -> myPreferences.consent = true; resume() }
                 .setNegativeButton(android.R.string.no) { _, _ -> finish() }
                 .show()

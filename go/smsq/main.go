@@ -25,6 +25,8 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
+const version = "1.7.0"
+
 var errBlockedByUser = errors.New("blocked by user")
 
 // checkErr panics on an error
@@ -42,6 +44,7 @@ type smsRequest struct {
 type sms struct {
 	Key       string `json:"key"`
 	ID        int64  `json:"id"`
+	Type      string `json:"type"`
 	Text      string `json:"text"`
 	SIM       string `json:"sim"`
 	Carrier   string `json:"carrier"`
@@ -49,6 +52,11 @@ type sms struct {
 	Timestamp int64  `json:"timestamp"`
 	Offset    int    `json:"offset"`
 }
+
+const (
+	typeSMS          = "sms"
+	typeIncomingCall = "incoming_call"
+)
 
 type deliveryResult int
 
@@ -128,6 +136,7 @@ func (r deliveryResult) String() string {
 }
 
 func (w *worker) logConfig() {
+	linf("smsq version: " + version)
 	cfgString, err := json.MarshalIndent(w.cfg, "", "    ")
 	checkErr(err)
 	linf("config: " + string(cfgString))
@@ -365,10 +374,10 @@ func (w *worker) processIncomingCommand(chatID int64, command, arguments string)
 	case "help":
 		_ = w.sendText(chatID, false, parseHTML,
 			""+
-				"smsq: Receive SMS messages in Telegram\n"+
+				"smsq: Receive SMS messages and calls in Telegram\n"+
 				"1. Install Android app\n"+
 				"2. Open app, start forwarding, connect Telegram\n"+
-				"3. Now you receive your SMS messages in this bot!\n"+
+				"3. Now you receive your SMS messages and calls in this bot!\n"+
 				"Project page: https://smsq.me\n"+
 				"Source code: https://github.com/igrmk/smsq\n"+
 				"\n"+
@@ -587,6 +596,11 @@ func (w *worker) deliver(sms sms) deliveryResult {
 	loc := time.FixedZone("", sms.Offset)
 	tm := time.Unix(sms.Timestamp, 0).In(loc)
 	lines = append(lines, tm.Format("2006-01-02 15:04:05"))
+
+	if sms.Type == typeIncomingCall {
+		lines = append(lines, "📞 <b>Incoming call</b>")
+	}
+
 	var sender = html.EscapeString(sms.Sender)
 	var sim = html.EscapeString(sms.SIM)
 	if sim == "" {
@@ -603,7 +617,9 @@ func (w *worker) deliver(sms sms) deliveryResult {
 		lines[i] = "<i>" + l + "</i>"
 	}
 
-	lines = append(lines, html.EscapeString(sms.Text))
+	if sms.Type != typeIncomingCall && sms.Text != "" {
+		lines = append(lines, html.EscapeString(sms.Text))
+	}
 	text := strings.Join(lines, "\n")
 
 	if err := w.sendText(*chatID, true, parseHTML, text); err != nil {
