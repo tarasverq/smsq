@@ -14,6 +14,7 @@ object Constants {
     const val PREF_KEY = "key"
     const val PREF_ON = "on"
     const val PREF_CARRIER = "show_carrier"
+    const val PREF_FORWARD_CALLS = "forward_calls"
     const val PREF_CONSENT = "consent"
     const val PREF_RETIRED = "retired"
     const val PREF_VERSION_CODE = "version_code"

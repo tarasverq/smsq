@@ -93,10 +93,28 @@ Usage
 
 1. Install Android app
 2. Open the app
-3. Put your bot name to first text field. e.g. `my_sms_bot` 
-4. Put your backend url **with ending slash**.  e.g. `https://domain.com/` 
-5. start forwarding, connect Telegram
-6. Now you receive your SMS messages and incoming call notifications in this bot!
+3. Put your bot name to first text field. e.g. `my_sms_bot`
+4. Put your backend url **with ending slash**.  e.g. `https://domain.com/`
+5. Press **Start** to begin forwarding
+6. Connect to Telegram using one of these methods:
+   - Press **Connect Telegram** button (requires Telegram on the phone)
+   - Press **Copy key** and send the copied command to the bot from any device
+7. Now you receive your SMS messages and incoming call notifications in this bot!
+
+Features
+--------
+
+### Multiple devices support
+You can connect multiple phones to a single Telegram account. Each device gets its own unique key.
+
+**Bot commands:**
+- `/devices` — List all connected devices
+- `/stop` — Disconnect all devices
+- `/help` — Show help
+
+### Settings
+- **Show carrier** — Include SIM/carrier name in notifications
+- **Forward calls** — Enable/disable incoming call notifications (SMS forwarding is always on)
 
 ### In case you don't want to set up backend you can use backend deployed by me.
 

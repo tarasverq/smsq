@@ -194,7 +194,7 @@ func midnight() int64 {
 }
 
 func (w *worker) keyForChat(chatID int64) *string {
-	query, err := w.db.Query("select key from users where chat_id=? and deleted=0", chatID)
+	query, err := w.db.Query("select key from devices where chat_id=? and deleted=0 limit 1", chatID)
 	checkErr(err)
 	defer func() { checkErr(query.Close()) }()
 	if !query.Next() {
@@ -206,7 +206,7 @@ func (w *worker) keyForChat(chatID int64) *string {
 }
 
 func (w *worker) chatForKey(chatKey string) (*int64, int) {
-	query, err := w.db.Query("select chat_id, daily_limit from users where key=? and deleted=0", chatKey)
+	query, err := w.db.Query("select chat_id, daily_limit from devices where key=? and deleted=0", chatKey)
 	checkErr(err)
 	defer func() { checkErr(query.Close()) }()
 	if !query.Next() {
@@ -225,50 +225,58 @@ func checkKey(key string) bool {
 }
 
 func (w *worker) userExists(chatID int64) bool {
-	return singleInt(w.db.QueryRow("select count(*) from users where chat_id=? and deleted=0", chatID)) != 0
+	return singleInt(w.db.QueryRow("select count(*) from devices where chat_id=? and deleted=0", chatID)) != 0
+}
+
+func (w *worker) deviceExists(key string) bool {
+	return singleInt(w.db.QueryRow("select count(*) from devices where key=? and deleted=0", key)) != 0
+}
+
+func (w *worker) deviceCount(chatID int64) int {
+	return singleInt(w.db.QueryRow("select count(*) from devices where chat_id=? and deleted=0", chatID))
 }
 
 func (w *worker) stop(chatID int64) {
-	w.mustExec("update users set deleted=1 where chat_id=?", chatID)
-	_ = w.sendText(chatID, false, parseRaw, "Access revoked")
+	w.mustExec("update devices set deleted=1 where chat_id=?", chatID)
+	_ = w.sendText(chatID, false, parseRaw, "All devices disconnected")
 }
 
 func (w *worker) start(chatID int64, key string) {
 	if key == "" && w.userExists(chatID) {
-		_ = w.sendText(chatID, false, parseRaw, "You are already set up!")
+		count := w.deviceCount(chatID)
+		_ = w.sendText(chatID, false, parseRaw, fmt.Sprintf("You have %d device(s) connected. Use /devices to manage.", count))
 		return
 	}
 	if key == "" || !checkKey(key) {
 		_ = w.sendText(chatID, false, parseRaw, "Install smsQ application on your phone https://smsq.me")
 		return
 	}
-	chatKey := w.keyForChat(chatID)
-	if chatKey != nil && *chatKey == key {
-		_ = w.sendText(chatID, false, parseRaw, "You are already set up!")
-		return
-	}
-	if chatKey != nil {
-		_ = w.sendText(chatID, false, parseRaw, "Your previous subscription is revoked")
-	}
 
-	existingChatID, _ := w.chatForKey(key)
-	if existingChatID != nil && *existingChatID != chatID {
-		_ = w.sendText(chatID, false, parseRaw, "Subscription on other Telegram account has been revoked")
-		_ = w.sendText(*existingChatID, false, parseRaw, "Your subscription has been revoked from other Telegram account")
+	// Check if this exact device is already connected to this chat
+	if w.deviceExists(key) {
+		existingChatID, _ := w.chatForKey(key)
+		if existingChatID != nil && *existingChatID == chatID {
+			_ = w.sendText(chatID, false, parseRaw, "This device is already connected!")
+			return
+		}
+		// Device connected to another account - transfer it
+		if existingChatID != nil {
+			_ = w.sendText(*existingChatID, false, parseRaw, "One of your devices has been transferred to another Telegram account")
+		}
 	}
 
 	w.mustExec(`
-		insert or replace into users (chat_id, key, daily_limit) values (?, ?, ?)
-		on conflict(chat_id) do update set key=excluded.key, deleted=0`,
-		chatID,
+		insert or replace into devices (key, chat_id, daily_limit) values (?, ?, ?)`,
 		key,
+		chatID,
 		w.cfg.DeliveredLimit)
 
-	_ = w.sendText(chatID, false, parseRaw, "Congratulations! You should see here new SMS messages")
+	count := w.deviceCount(chatID)
+	_ = w.sendText(chatID, false, parseRaw, fmt.Sprintf("Device connected! You now have %d device(s). Use /devices to manage.", count))
 }
 
 func (w *worker) broadcastChats() (chats []int64) {
-	chatsQuery, err := w.db.Query(`select chat_id from users where deleted=0`)
+	chatsQuery, err := w.db.Query(`select distinct chat_id from devices where deleted=0`)
 	checkErr(err)
 	defer func() { checkErr(chatsQuery.Close()) }()
 	for chatsQuery.Next() {
@@ -325,7 +333,7 @@ func (w *worker) limit(arguments string) {
 		_ = w.sendText(w.cfg.AdminID, false, parseRaw, "Second argument is invalid")
 		return
 	}
-	result := w.mustExec("update users set daily_limit=? where chat_id=?", limit, whom)
+	result := w.mustExec("update devices set daily_limit=? where chat_id=?", limit, whom)
 	answer := "OK"
 	rows, err := result.RowsAffected()
 	checkErr(err)
@@ -353,6 +361,37 @@ func (w *worker) processAdminMessage(chatID int64, command, arguments string) bo
 	return false
 }
 
+func (w *worker) devices(chatID int64) {
+	query, err := w.db.Query("select key, name, delivered from devices where chat_id=? and deleted=0", chatID)
+	checkErr(err)
+	defer func() { checkErr(query.Close()) }()
+
+	var lines []string
+	lines = append(lines, "<b>Your devices:</b>")
+	i := 0
+	for query.Next() {
+		var key, name string
+		var delivered int
+		checkErr(query.Scan(&key, &name, &delivered))
+		i++
+		displayName := name
+		if displayName == "" {
+			displayName = "Device " + strconv.Itoa(i)
+		}
+		shortKey := key[:8] + "..."
+		lines = append(lines, fmt.Sprintf("%d. %s (%s) - %d msgs", i, displayName, shortKey, delivered))
+	}
+
+	if i == 0 {
+		_ = w.sendText(chatID, false, parseRaw, "No devices connected. Use the app to connect.")
+		return
+	}
+
+	lines = append(lines, "")
+	lines = append(lines, "Use /stop to disconnect all devices")
+	_ = w.sendText(chatID, false, parseHTML, strings.Join(lines, "\n"))
+}
+
 func (w *worker) processIncomingCommand(chatID int64, command, arguments string) {
 	command = strings.ToLower(command)
 	if chatID == w.cfg.AdminID && w.processAdminMessage(chatID, command, arguments) {
@@ -365,6 +404,8 @@ func (w *worker) processIncomingCommand(chatID int64, command, arguments string)
 		w.feedback(chatID, arguments)
 	case "start":
 		w.start(chatID, arguments)
+	case "devices":
+		w.devices(chatID)
 	case "challenge":
 		if reply, ok := w.cfg.Challenges[arguments]; ok {
 			_ = w.sendText(chatID, false, parseRaw, reply)
@@ -383,7 +424,8 @@ func (w *worker) processIncomingCommand(chatID int64, command, arguments string)
 				"\n"+
 				"Bot commands:\n"+
 				"<b>/help</b> — Help\n"+
-				"<b>/stop</b> — Revoke access\n"+
+				"<b>/devices</b> — List connected devices\n"+
+				"<b>/stop</b> — Disconnect all devices\n"+
 				"<b>/feedback</b> — Send feedback")
 	default:
 		_ = w.sendText(chatID, false, parseRaw, "Unknown command")
@@ -435,28 +477,34 @@ func (w *worker) feedback(chatID int64, text string) {
 }
 
 func (w *worker) userCount() int {
-	query := w.db.QueryRow("select count(*) from users where deleted=0")
+	query := w.db.QueryRow("select count(distinct chat_id) from devices where deleted=0")
+	return singleInt(query)
+}
+
+func (w *worker) deviceCountTotal() int {
+	query := w.db.QueryRow("select count(*) from devices where deleted=0")
 	return singleInt(query)
 }
 
 func (w *worker) activeUserCount() int {
-	query := w.db.QueryRow("select count(*) from users where delivered > 0 and deleted=0")
+	query := w.db.QueryRow("select count(distinct chat_id) from devices where delivered > 0 and deleted=0")
 	return singleInt(query)
 }
 
 func (w *worker) smsCount() int {
-	query := w.db.QueryRow("select coalesce(sum(delivered), 0) from users")
+	query := w.db.QueryRow("select coalesce(sum(delivered), 0) from devices")
 	return singleInt(query)
 }
 
 func (w *worker) smsTodayCount() int {
-	query := w.db.QueryRow("select coalesce(sum(delivered_today), 0) from users")
+	query := w.db.QueryRow("select coalesce(sum(delivered_today), 0) from devices")
 	return singleInt(query)
 }
 
 func (w *worker) stat() {
 	lines := []string{}
 	lines = append(lines, fmt.Sprintf("users: %d", w.userCount()))
+	lines = append(lines, fmt.Sprintf("devices: %d", w.deviceCountTotal()))
 	lines = append(lines, fmt.Sprintf("active users: %d", w.activeUserCount()))
 	lines = append(lines, fmt.Sprintf("smses: %d", w.smsCount()))
 	lines = append(lines, fmt.Sprintf("smses today: %d", w.smsTodayCount()))
@@ -573,20 +621,20 @@ func (w *worker) handleEndpoints() {
 func (w *worker) deliver(sms sms) deliveryResult {
 	chatID, dailyLimit := w.chatForKey(sms.Key)
 	if chatID == nil {
-		w.ldbg("cannot found user")
+		w.ldbg("cannot found device")
 		return userNotFound
 	}
 
-	w.mustExec("update users set received_today=received_today+1 where chat_id=?", *chatID)
-	receivedToday := singleInt(w.db.QueryRow("select received_today from users where chat_id=?", *chatID))
+	w.mustExec("update devices set received_today=received_today+1 where key=?", sms.Key)
+	receivedToday := singleInt(w.db.QueryRow("select received_today from devices where key=?", sms.Key))
 	if receivedToday >= w.cfg.ReceivedLimit+1 {
 		return rateLimited
 	}
 
-	deliveredToday := singleInt(w.db.QueryRow("select delivered_today from users where chat_id=?", *chatID))
+	deliveredToday := singleInt(w.db.QueryRow("select delivered_today from devices where key=?", sms.Key))
 	if deliveredToday >= dailyLimit {
 		if deliveredToday == dailyLimit {
-			w.mustExec("update users set delivered_today=delivered_today+1 where chat_id=?", *chatID)
+			w.mustExec("update devices set delivered_today=delivered_today+1 where key=?", sms.Key)
 			_ = w.sendText(*chatID, true, parseRaw, fmt.Sprintf("We cannot deliver more than %d messages a day", w.cfg.DeliveredLimit))
 		}
 		return rateLimited
@@ -630,7 +678,7 @@ func (w *worker) deliver(sms sms) deliveryResult {
 			return networkError
 		}
 	}
-	w.mustExec("update users set delivered=delivered+1, delivered_today=delivered_today+1 where chat_id=?", chatID)
+	w.mustExec("update devices set delivered=delivered+1, delivered_today=delivered_today+1 where key=?", sms.Key)
 	return delivered
 }
 
@@ -649,7 +697,7 @@ func (w *worker) decrypt(str string) ([]byte, error) {
 func (w *worker) periodic() {
 	if m := midnight(); m > w.storedMidnight() {
 		w.storeMidnight(m)
-		w.mustExec("update users set delivered_today=0, received_today=0")
+		w.mustExec("update devices set delivered_today=0, received_today=0")
 	}
 }
 

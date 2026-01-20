@@ -34,8 +34,11 @@ class CallReceiver : BroadcastReceiver() {
             return
         }
 
-        context.linf(tag, "action received: ${intent.action}, on: ${context.myPreferences.on}")
+        context.linf(tag, "action received: ${intent.action}, on: ${context.myPreferences.on}, forwardCalls: ${context.myPreferences.forwardCalls}")
         if (!context.myPreferences.on) {
+            return
+        }
+        if (!context.myPreferences.forwardCalls) {
             return
         }
 
