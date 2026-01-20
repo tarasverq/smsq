@@ -15,7 +15,10 @@ Since Igor's backend doesn't seem to work anymore, I decided to set up my own.
 
 This fork allows you to set up your own backend and telegram bot.
 
-![App main screen](https://github.com/tarasverq/smsq/assets/8226275/9d411f25-f668-4f14-a33e-df06a3882346)
+<img width="324" height="657" alt="image" src="https://github.com/user-attachments/assets/4e08023d-6d35-427f-89e8-e543765aaa11" />
+<br/>
+<img width="163" height="158" alt="image" src="https://github.com/user-attachments/assets/5a1ed266-0c2e-4b46-8ca2-6e8baeb1b6a2" />
+
 
 ### Backend installation (optional)
 
@@ -89,7 +92,7 @@ Just install mobile app from [releases](https://github.com/tarasverq/smsq/releas
 Usage
 -----
 
-![App main screen](https://github.com/tarasverq/smsq/assets/8226275/9d411f25-f668-4f14-a33e-df06a3882346)
+<img width="324" height="657" alt="image" src="https://github.com/user-attachments/assets/4e08023d-6d35-427f-89e8-e543765aaa11" />
 
 1. Install Android app
 2. Open the app
@@ -100,6 +103,9 @@ Usage
    - Press **Connect Telegram** button (requires Telegram on the phone)
    - Press **Copy key** and send the copied command to the bot from any device
 7. Now you receive your SMS messages and incoming call notifications in this bot!
+
+<br/>
+<img width="163" height="158" alt="image" src="https://github.com/user-attachments/assets/5a1ed266-0c2e-4b46-8ca2-6e8baeb1b6a2" />
 
 Features
 --------
