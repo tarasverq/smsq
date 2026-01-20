@@ -35,6 +35,13 @@ var SharedPreferences.showCarrier: Boolean
         apply()
     }
 
+var SharedPreferences.forwardCalls: Boolean
+    get() = getBoolean(Constants.PREF_FORWARD_CALLS, true)
+    set(value) = with(edit()) {
+        putBoolean(Constants.PREF_FORWARD_CALLS, value)
+        apply()
+    }
+
 var SharedPreferences.consent: Boolean
     get() = getBoolean(Constants.PREF_CONSENT, false)
     set(value) = with(edit()) {

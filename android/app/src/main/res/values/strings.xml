@@ -5,8 +5,11 @@
     <string name="connect">Connect Telegram</string>
     <string name="revoke">Revoke</string>
     <string name="show_carrier">Show carrier</string>
+    <string name="forward_calls">Forward calls</string>
     <string name="privacy_policy">Privacy policy</string>
     <string name="send_logs_to_dev">Send logs to dev</string>
     <string name="clear_prefs">Clear prefs</string>
     <string name="delivered">Delivered</string>
+    <string name="copy_key">Copy key</string>
+    <string name="key_copied">Key copied to clipboard</string>
 </resources>

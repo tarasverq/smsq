@@ -26,6 +26,23 @@ var migrations = []func(w *worker){
 		w.mustExec("alter table users add daily_limit integer not null default 0;")
 		w.mustExec("update users set daily_limit=?", w.cfg.DeliveredLimit)
 	},
+	// Migration: support multiple devices per Telegram account
+	func(w *worker) {
+		w.mustExec(`
+			create table if not exists devices (
+				key text primary key,
+				chat_id integer not null,
+				name text not null default '',
+				delivered integer not null default 0,
+				delivered_today integer not null default 0,
+				received_today integer not null default 0,
+				daily_limit integer not null default 0,
+				deleted integer not null default 0);`)
+		w.mustExec(`
+			insert into devices (key, chat_id, name, delivered, delivered_today, received_today, daily_limit, deleted)
+			select key, chat_id, '', delivered, delivered_today, received_today, daily_limit, deleted
+			from users where key != '';`)
+	},
 }
 
 func (w *worker) applyMigrations() {

@@ -1,11 +1,11 @@
-Android app forwarding SMS messages to Telegram bot
-===================================================
+Android app forwarding SMS messages and call notifications to a Telegram bot
+======================================================================
 
 [![license: GPL v3](https://img.shields.io/badge/license-GPL_v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![github pages](https://img.shields.io/badge/github-pages-blue.svg)](https://smsq.me)
 
 It is just a handy thing when you work on your laptop.
-You probably don't want to pick up your phone every time you need to enter an OTP code.
+You probably don't want to pick up your phone every time you need to enter an OTP code or check who is calling.
 
 ## This is parametrized fork of original smsq by Igor Mikushkin
 
@@ -15,7 +15,7 @@ Since Igor's backend doesn't seem to work anymore, I decided to set up my own.
 
 This fork allows you to set up your own backend and telegram bot.
 
-![image](https://github.com/tarasverq/smsq/assets/8226275/9d411f25-f668-4f14-a33e-df06a3882346)
+![App main screen](https://github.com/tarasverq/smsq/assets/8226275/9d411f25-f668-4f14-a33e-df06a3882346)
 
 ### Backend installation (optional)
 
@@ -89,14 +89,32 @@ Just install mobile app from [releases](https://github.com/tarasverq/smsq/releas
 Usage
 -----
 
-![image](https://github.com/tarasverq/smsq/assets/8226275/9d411f25-f668-4f14-a33e-df06a3882346)
+![App main screen](https://github.com/tarasverq/smsq/assets/8226275/9d411f25-f668-4f14-a33e-df06a3882346)
 
 1. Install Android app
 2. Open the app
-3. Put your bot name to first text field. e.g. `my_sms_bot` 
-4. Put your backend url **with ending slash**.  e.g. `https://domain.com/` 
-5. start forwarding, connect Telegram
-6. Now you receive your SMS messages in this bot!
+3. Put your bot name to first text field. e.g. `my_sms_bot`
+4. Put your backend url **with ending slash**.  e.g. `https://domain.com/`
+5. Press **Start** to begin forwarding
+6. Connect to Telegram using one of these methods:
+   - Press **Connect Telegram** button (requires Telegram on the phone)
+   - Press **Copy key** and send the copied command to the bot from any device
+7. Now you receive your SMS messages and incoming call notifications in this bot!
+
+Features
+--------
+
+### Multiple devices support
+You can connect multiple phones to a single Telegram account. Each device gets its own unique key.
+
+**Bot commands:**
+- `/devices` — List all connected devices
+- `/stop` — Disconnect all devices
+- `/help` — Show help
+
+### Settings
+- **Show carrier** — Include SIM/carrier name in notifications
+- **Forward calls** — Enable/disable incoming call notifications (SMS forwarding is always on)
 
 ### In case you don't want to set up backend you can use backend deployed by me.
 

@@ -16,6 +16,7 @@ import com.github.igrmk.smsq.Constants
 import com.github.igrmk.smsq.R
 import com.github.igrmk.smsq.helpers.*
 import com.github.igrmk.smsq.services.ResenderService
+import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_welcome.*
 import android.provider.Telephony.Sms.Intents.SMS_RECEIVED_ACTION
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
@@ -73,6 +74,7 @@ class WelcomeActivity : AppCompatActivity() {
         if (myPreferences.showCarrier) {
             checkShowCarrierSwitch()
         }
+        forwardCalls.isChecked = myPreferences.forwardCalls
 
         botIdText.setText(myPreferences.botName);
         urlText.setText(myPreferences.domainName);
@@ -94,7 +96,9 @@ class WelcomeActivity : AppCompatActivity() {
             allowed()
             return true
         }
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) == PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.RECEIVE_SMS) == PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_CALL_LOG) == PERMISSION_GRANTED &&
+            ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) == PERMISSION_GRANTED) {
             allowed()
             return true
         }
@@ -107,7 +111,15 @@ class WelcomeActivity : AppCompatActivity() {
             return
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.RECEIVE_SMS), Constants.PERMISSIONS_SMS)
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(
+                    Manifest.permission.RECEIVE_SMS,
+                    Manifest.permission.READ_CALL_LOG,
+                    Manifest.permission.READ_PHONE_STATE
+                ),
+                Constants.PERMISSIONS_SMS
+            )
         }
     }
 
@@ -120,13 +132,20 @@ class WelcomeActivity : AppCompatActivity() {
         if (myPreferences.key == null) {
             updateKey()
         }
+        showKey()
         this.startService(Intent(this, ResenderService::class.java))
+    }
+
+    private fun showKey() {
+        val key = myPreferences.key
+        copyKeyButton.visibility = if (key != null) View.VISIBLE else View.GONE
     }
 
     private fun stop() {
         myPreferences.on = false
         imageButton.setImageResource(R.drawable.ic_off)
         connect.isEnabled = false
+        copyKeyButton.visibility = View.GONE
         start.text = getString(R.string.start)
         this.stopService(Intent(this, ResenderService::class.java))
     }
@@ -185,7 +204,7 @@ class WelcomeActivity : AppCompatActivity() {
 
     private fun consentAlert() {
         AlertDialog.Builder(this)
-                .setMessage("Allow this application to read new SMS messages including their text, sender information, time and carrier name?")
+                .setMessage("Allow this application to read new SMS messages and calls including their text, sender information, time and carrier name?")
                 .setPositiveButton(android.R.string.yes) { _, _ -> myPreferences.consent = true; resume() }
                 .setNegativeButton(android.R.string.no) { _, _ -> finish() }
                 .show()
@@ -209,6 +228,13 @@ class WelcomeActivity : AppCompatActivity() {
             }
             telegramAlert()
         }
+    }
+
+    fun onCopyKeyClicked(@Suppress("UNUSED_PARAMETER") view: View) {
+        val key = myPreferences.key ?: return
+        val command = "/start $key"
+        copyToClipboard(command)
+        Toast.makeText(this, getString(R.string.key_copied), Toast.LENGTH_SHORT).show()
     }
 
     private fun checkShowCarrierSwitch(): Boolean {
@@ -235,6 +261,10 @@ class WelcomeActivity : AppCompatActivity() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.READ_PHONE_STATE), Constants.PERMISSIONS_STATE)
         }
+    }
+
+    fun onForwardCallsClicked(@Suppress("UNUSED_PARAMETER") view: View) {
+        myPreferences.forwardCalls = forwardCalls.isChecked
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
